@@ -9,5 +9,5 @@ class Config:
     seed: int = 1
     log_interval: int = 10
     save_model: bool = False
-    data_dir: str ="./cache/data/"
+    data_dir: str = "./cache/data/"
     output_dir: str = "./cache/models/"

@@ -1,7 +1,9 @@
+from os.path import abspath
 import numpy as np
 import torch
 import torch.nn.functional as F
 from torch import optim
+from utils import create_op_dir
 
 from config import Config
 from dataloaders.mnist_dataloader import (
@@ -103,9 +105,10 @@ def main():
         config_args=args,
     )
 
-    # Save all the models
-    torch.save(first5_mnist_model, args.output_dir + "first5_mnist_model")
-    torch.save(last5_mnist_model, args.output_dir + "last5_mnist_model")
+    # Save all source models
+    create_op_dir(args.output_dir)
+    torch.save(first5_mnist_model.state_dict(), args.output_dir + "first5_mnist_model")
+    torch.save(last5_mnist_model.state_dict(), args.output_dir + "last5_mnist_model")
 
 
 if __name__ == "__main__":
