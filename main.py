@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from dataloaders.mnist_dataloader import combined_test_loader
+from dataloaders.mnist import mnist_combined_test_loader
 from models.lenet5 import LeNet5
 from concat.logits_operations.disjointed_mnist import (
     concat_naive,
@@ -48,27 +48,27 @@ def mnist_main():
     print("Method 1: Concatenation with logits operations.")
     print("1.1 Naive")
     concat_naive(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
     print("1.2 Standard Deviation")
     concat_std(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
     print("1.3 Individual Ratio")
     concat_ratio(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
     print("1.4 Combined Ratio")
     concat_overall_ratio(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
     print("1.5 Third Quartile Difference")
     concat_thirdQ(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
 
@@ -79,52 +79,52 @@ def ensemble_noise_main():
     """
     print("Gauss Avg")
     concat_gauss_avg(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
     print("Poisson Avg")
     concat_poisson_avg(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
     print("5 Gauss Avg")
     concat_5_gauss_avg(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
     print("5 Gauss Vote")
     concat_5_gauss_vote(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
     print("5 Poisson Avg")
     concat_5_poisson_avg(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
     print("5 Poisson Vote")
     concat_5_poisson_vote(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
     print("Varying Gauss Stds Avg")
     concat_diff_gauss_avg(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
     print("Varying Gauss Stds Vote")
     concat_diff_gauss_vote(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
     print("Varying Poisson Rate Avg")
     concat_diff_poisson_avg(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
     print("Varying Poisson Rate Avg")
     concat_diff_poisson_vote(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
 
@@ -134,19 +134,19 @@ def ensemble_flip_randcrop_main():
     with different augmentation each pass, mainly using usual argmax
     """
     concat_flip_avg(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
     concat_flip_vote(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
     concat_randcrop_avg(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
     concat_randcrop_vote(
-        args, first5_mnist_model, last5_mnist_model, device, combined_test_loader
+        args, first5_mnist_model, last5_mnist_model, device, mnist_combined_test_loader
     )
 
 

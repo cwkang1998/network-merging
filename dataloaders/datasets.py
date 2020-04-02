@@ -1,5 +1,6 @@
 from torchvision.datasets import MNIST, CIFAR10
 
+
 class DisjointMNIST(MNIST):
     resources = [
         (

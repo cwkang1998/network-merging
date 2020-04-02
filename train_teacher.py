@@ -5,11 +5,11 @@ from torch import optim
 from utils import create_op_dir
 
 from config import Config
-from dataloaders.mnist_dataloader import (
-    first5_train_loader,
-    first5_test_loader,
-    last5_train_loader,
-    last5_test_loader,
+from dataloaders.mnist import (
+    mnist_first5_train_loader,
+    mnist_first5_test_loader,
+    mnist_last5_train_loader,
+    mnist_last5_test_loader,
 )
 from models.lenet5 import LeNet5
 
@@ -92,8 +92,8 @@ def main():
     first5_mnist_model = train_model(
         LeNet5,
         device=device,
-        train_loader=first5_train_loader,
-        test_loader=first5_test_loader,
+        train_loader=mnist_first5_train_loader,
+        test_loader=mnist_first5_test_loader,
         config_args=args,
     )
 
@@ -101,8 +101,8 @@ def main():
     last5_mnist_model = train_model(
         LeNet5,
         device=device,
-        train_loader=last5_train_loader,
-        test_loader=last5_test_loader,
+        train_loader=mnist_last5_train_loader,
+        test_loader=mnist_last5_test_loader,
         config_args=args,
     )
 

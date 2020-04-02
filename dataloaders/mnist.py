@@ -1,11 +1,11 @@
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from datasets.mnist import DisjointMNIST
+from .datasets import DisjointMNIST, MNIST, CIFAR10
 from config import Config
 
 args = Config()
 
-first5_train_loader = DataLoader(
+mnist_first5_train_loader = DataLoader(
     DisjointMNIST(
         args.data_dir,
         start_idx=0,
@@ -19,7 +19,7 @@ first5_train_loader = DataLoader(
     batch_size=args.batch_size,
     shuffle=True,
 )
-first5_test_loader = DataLoader(
+mnist_first5_test_loader = DataLoader(
     DisjointMNIST(
         args.data_dir,
         start_idx=0,
@@ -33,7 +33,7 @@ first5_test_loader = DataLoader(
     shuffle=True,
 )
 
-last5_train_loader = DataLoader(
+mnist_last5_train_loader = DataLoader(
     DisjointMNIST(
         args.data_dir,
         start_idx=5,
@@ -47,7 +47,7 @@ last5_train_loader = DataLoader(
     batch_size=args.batch_size,
     shuffle=True,
 )
-last5_test_loader = DataLoader(
+mnist_last5_test_loader = DataLoader(
     DisjointMNIST(
         args.data_dir,
         start_idx=5,
@@ -61,8 +61,8 @@ last5_test_loader = DataLoader(
     shuffle=True,
 )
 
-combined_train_loader = DataLoader(
-    DisjointMNIST(
+mnist_combined_train_loader = DataLoader(
+    MNIST(
         args.data_dir,
         train=True,
         download=True,
@@ -74,8 +74,8 @@ combined_train_loader = DataLoader(
     shuffle=True,
 )
 
-combined_test_loader = DataLoader(
-    DisjointMNIST(
+mnist_combined_test_loader = DataLoader(
+    MNIST(
         args.data_dir,
         train=False,
         transform=transforms.Compose(
