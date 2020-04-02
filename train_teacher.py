@@ -1,4 +1,3 @@
-from os.path import abspath
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -13,6 +12,8 @@ from dataloaders.mnist_dataloader import (
     last5_test_loader,
 )
 from models.lenet5 import LeNet5
+
+seed = 1  # Arbitrary seeds
 
 
 def train(args, model, device, train_loader, optimizer, epoch):
@@ -82,8 +83,8 @@ def main():
 
     use_cuda = not args.no_cuda and torch.cuda.is_available()
 
-    np.random.seed(args.seed)
-    torch.manual_seed(args.seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
 
     device = torch.device("cuda" if use_cuda else "cpu")
 
