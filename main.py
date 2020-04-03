@@ -150,6 +150,10 @@ def ensemble_flip_randcrop_main():
     )
 
 
+def cifar10_and_mnist_main():
+    pass
+
+
 if __name__ == "__main__":
     # Statistical methods on logits
     # Operations on logits to make decisions
@@ -159,9 +163,10 @@ if __name__ == "__main__":
     # for i in range(len(args.seeds)):
     #     seed = args.seeds[i]
     #     print(f"Iteration: {i+1}, Seed: {seed}")
-    seed = 1
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    ensemble_noise_main()
+    # seed = 1
+    # np.random.seed(seed)
+    # torch.manual_seed(seed)
+    # ensemble_noise_main()
 
     # ensemble_flip_randcrop_main()
+    cifar10_and_mnist_main()
