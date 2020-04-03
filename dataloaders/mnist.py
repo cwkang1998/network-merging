@@ -1,6 +1,6 @@
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from .datasets import DisjointMNIST, MNIST
+from torchvision.datasets import MNIST
 from config import Config
 
 

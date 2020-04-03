@@ -1,8 +1,10 @@
 from typing import List
+
+
 # Training settings
 class Config:
     mnist_batch_size: int = 512
-    cifar10_batch_size: int = 4
+    cifar10_batch_size: int = 128
     test_batch_size: int = 1000
     epochs: int = 10
     lr: float = 0.01

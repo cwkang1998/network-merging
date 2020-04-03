@@ -2,7 +2,7 @@ import numpy as np
 import torch
 from dataloaders.mnist import mnist_combined_test_loader
 from models.lenet5 import LeNet5
-from concat.logits_operations.disjointed_mnist import (
+from concat.logits_operations import (
     concat_naive,
     concat_overall_ratio,
     concat_ratio,
@@ -37,10 +37,10 @@ device = torch.device("cuda" if use_cuda else "cpu")
 kwargs = {"num_workers": 1, "pin_memory": True} if use_cuda else {}
 
 # Load the trained models
-first5_mnist_model = LeNet5().to(device)
+first5_mnist_model = LeNet5(padding=2).to(device)
 first5_mnist_model.load_state_dict(torch.load(args.output_dir + "first5_mnist_model"))
 
-last5_mnist_model = LeNet5().to(device)
+last5_mnist_model = LeNet5(padding=2).to(device)
 last5_mnist_model.load_state_dict(torch.load(args.output_dir + "last5_mnist_model"))
 
 

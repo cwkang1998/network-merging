@@ -1,15 +1,10 @@
 from torch import nn
-import torch.nn.functional as F
 
 
 class LeNet5(nn.Module):
-    """
-    LeNet5 for 5 classes
-    """
-
-    def __init__(self):
+    def __init__(self, input_channel=1, padding=0, output_size=10):
         super(LeNet5, self).__init__()
-        self.conv1 = nn.Conv2d(1, 6, kernel_size=(5, 5), padding=2)
+        self.conv1 = nn.Conv2d(input_channel, 6, kernel_size=(5, 5), padding=padding)
         self.relu1 = nn.ReLU()
         self.maxpool1 = nn.MaxPool2d(kernel_size=(2, 2), stride=2)
         self.conv2 = nn.Conv2d(6, 16, kernel_size=(5, 5))
@@ -19,7 +14,7 @@ class LeNet5(nn.Module):
         self.relu3 = nn.ReLU()
         self.fc1 = nn.Linear(120, 84)
         self.relu4 = nn.ReLU()
-        self.fc2 = nn.Linear(84, 5)
+        self.fc2 = nn.Linear(84, output_size)
 
     def forward(self, img, out_feature=False):
         output = self.conv1(img)
@@ -41,13 +36,9 @@ class LeNet5(nn.Module):
 
 
 class LeNet5Halfed(nn.Module):
-    """
-    Halfed sized LeNet5 for 5 classes
-    """
-
-    def __init__(self):
-        super(LeNet5, self).__init__()
-        self.conv1 = nn.Conv2d(1, 3, kernel_size=(5, 5), padding=2)
+    def __init__(self, input_channel=1, padding=0, output_size=10):
+        super(LeNet5Halfed, self).__init__()
+        self.conv1 = nn.Conv2d(input_channel, 3, kernel_size=(5, 5), padding=padding)
         self.relu1 = nn.ReLU()
         self.maxpool1 = nn.MaxPool2d(kernel_size=(2, 2), stride=2)
         self.conv2 = nn.Conv2d(3, 8, kernel_size=(5, 5))
@@ -57,7 +48,7 @@ class LeNet5Halfed(nn.Module):
         self.relu3 = nn.ReLU()
         self.fc1 = nn.Linear(60, 42)
         self.relu4 = nn.ReLU()
-        self.fc2 = nn.Linear(42, 5)
+        self.fc2 = nn.Linear(42, output_size)
 
     def forward(self, img, out_feature=False):
         output = self.conv1(img)

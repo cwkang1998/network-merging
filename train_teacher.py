@@ -3,7 +3,6 @@ import torch
 import torch.nn.functional as F
 from torch import optim
 from utils import create_op_dir
-
 from config import Config
 from dataloaders.mnist import (
     mnist_first5_train_loader,
@@ -11,9 +10,13 @@ from dataloaders.mnist import (
     mnist_last5_train_loader,
     mnist_last5_test_loader,
 )
-from models.lenet5 import LeNet5
-
-seed = 1  # Arbitrary seeds
+from dataloaders.mnist_cifar10 import (
+    mnist_train_loader,
+    mnist_test_loader,
+    cifar10_train_loader,
+    cifar10_test_loader,
+)
+from models.lenet5 import LeNet5, LeNet5Halfed
 
 
 def train(args, model, device, train_loader, optimizer, epoch):
@@ -65,8 +68,8 @@ def test(args, model, device, test_loader):
     )
 
 
-def train_model(arch, device, train_loader, test_loader, config_args):
-    model = arch().to(device)
+def train_model(model, device, train_loader, test_loader, config_args):
+    model = model.to(device)
     optimizer = optim.SGD(
         model.parameters(), lr=config_args.lr, momentum=config_args.momentum
     )
@@ -83,33 +86,125 @@ def main():
 
     use_cuda = not args.no_cuda and torch.cuda.is_available()
 
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-
     device = torch.device("cuda" if use_cuda else "cpu")
 
-    print("First 5 MNIST disjointed model")
-    first5_mnist_model = train_model(
-        LeNet5,
-        device=device,
-        train_loader=mnist_first5_train_loader,
-        test_loader=mnist_first5_test_loader,
-        config_args=args,
-    )
-
-    print("Last 5 MNIST disjointed model")
-    last5_mnist_model = train_model(
-        LeNet5,
-        device=device,
-        train_loader=mnist_last5_train_loader,
-        test_loader=mnist_last5_test_loader,
-        config_args=args,
-    )
-
-    # Save all source models
     create_op_dir(args.output_dir)
-    torch.save(first5_mnist_model.state_dict(), args.output_dir + "first5_mnist_model")
-    torch.save(last5_mnist_model.state_dict(), args.output_dir + "last5_mnist_model")
+
+    for i in range(len(args.seeds)):
+        print(f"Iteration {i}, Seed {args.seeds[i]}")
+
+        np.random.seed(args.seeds[i])
+        torch.manual_seed(args.seeds[i])
+
+        # Lenet5 models
+        print("First 5 MNIST disjointed model")
+        first5_mnist_model = train_model(
+            LeNet5(padding=2, output_size=5),
+            device=device,
+            train_loader=mnist_first5_train_loader,
+            test_loader=mnist_first5_test_loader,
+            config_args=args,
+        )
+
+        print("Last 5 MNIST disjointed model")
+        last5_mnist_model = train_model(
+            LeNet5(padding=2, output_size=5),
+            device=device,
+            train_loader=mnist_last5_train_loader,
+            test_loader=mnist_last5_test_loader,
+            config_args=args,
+        )
+
+        print("Complete MNIST Model")
+        mnist_model = train_model(
+            LeNet5(padding=2),
+            device=device,
+            train_loader=mnist_train_loader,
+            test_loader=mnist_test_loader,
+            config_args=args,
+        )
+
+        print("Complete CIFAR10 Model")
+        args.log_interval = 100
+        cifar10_model = train_model(
+            LeNet5(input_channel=3, padding=0),
+            device=device,
+            train_loader=cifar10_train_loader,
+            test_loader=cifar10_test_loader,
+            config_args=args,
+        )
+
+        torch.save(
+            first5_mnist_model.state_dict(),
+            args.output_dir + f"first5_mnist_model_{args.seeds[i]}",
+        )
+        torch.save(
+            last5_mnist_model.state_dict(),
+            args.output_dir + f"last5_mnist_model_{args.seeds[i]}",
+        )
+        torch.save(
+            mnist_model.state_dict(), args.output_dir + f"mnist_model_{args.seeds[i]}",
+        )
+        torch.save(
+            cifar10_model.state_dict(),
+            args.output_dir + f"cifar10_model_{args.seeds[i]}",
+        )
+
+        # Lenet5 Half
+        args = Config()
+        print("First 5 MNIST disjointed model")
+        first5_mnist_halfed_model = train_model(
+            LeNet5Halfed(padding=2, output_size=5),
+            device=device,
+            train_loader=mnist_first5_train_loader,
+            test_loader=mnist_first5_test_loader,
+            config_args=args,
+        )
+
+        print("Last 5 MNIST disjointed model")
+        last5_mnist_halfed_model = train_model(
+            LeNet5Halfed(padding=2, output_size=5),
+            device=device,
+            train_loader=mnist_last5_train_loader,
+            test_loader=mnist_last5_test_loader,
+            config_args=args,
+        )
+
+        print("Complete MNIST Model")
+        mnist_halfed_model = train_model(
+            LeNet5Halfed(padding=2),
+            device=device,
+            train_loader=mnist_train_loader,
+            test_loader=mnist_test_loader,
+            config_args=args,
+        )
+
+        print("Complete CIFAR10 Model")
+        args.log_interval = 100
+        cifar10_halfed_model = train_model(
+            LeNet5Halfed(input_channel=3, padding=0),
+            device=device,
+            train_loader=cifar10_train_loader,
+            test_loader=cifar10_test_loader,
+            config_args=args,
+        )
+
+        torch.save(
+            first5_mnist_halfed_model.state_dict(),
+            args.output_dir + f"first5_mnist_halfed_model_{args.seeds[i]}",
+        )
+        torch.save(
+            last5_mnist_halfed_model.state_dict(),
+            args.output_dir + f"last5_mnist_halfed_model_{args.seeds[i]}",
+        )
+        torch.save(
+            mnist_halfed_model.state_dict(),
+            args.output_dir + f"mnist_halfed_model_{args.seeds[i]}",
+        )
+        torch.save(
+            cifar10_halfed_model.state_dict(),
+            args.output_dir + f"cifar10_halfed_model_{args.seeds[i]}",
+        )
 
 
 if __name__ == "__main__":
