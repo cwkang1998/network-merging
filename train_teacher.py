@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from torch import optim
-from utils import create_op_dir
+from utils.files import create_op_dir
 from config import Config
 from dataloaders.mnist import (
     mnist_first5_train_loader,
@@ -10,13 +10,13 @@ from dataloaders.mnist import (
     mnist_last5_train_loader,
     mnist_last5_test_loader,
 )
-from dataloaders.mnist_cifar10 import (
+from mnist_cifar10.dataloaders import (
     mnist_train_loader,
     mnist_test_loader,
     cifar10_train_loader,
     cifar10_test_loader,
 )
-from models.lenet5 import LeNet5, LeNet5Halfed
+from archs.lenet5 import LeNet5, LeNet5Halfed
 
 
 def train(args, model, device, train_loader, optimizer, epoch):
@@ -80,9 +80,10 @@ def train_model(model, device, train_loader, test_loader, config_args):
     return model
 
 
-def main():
-    # Load the configurations
+def main(): 
+
     args = Config()
+    ori_log_interval = args.log_interval
 
     use_cuda = not args.no_cuda and torch.cuda.is_available()
 
@@ -95,29 +96,30 @@ def main():
 
         np.random.seed(args.seeds[i])
         torch.manual_seed(args.seeds[i])
+        args.log_interval = ori_log_interval
 
         # Lenet5 models
-        print("First 5 MNIST disjointed model")
-        first5_mnist_model = train_model(
-            LeNet5(padding=2, output_size=5),
-            device=device,
-            train_loader=mnist_first5_train_loader,
-            test_loader=mnist_first5_test_loader,
-            config_args=args,
-        )
+        # print("First 5 MNIST disjointed model")
+        # first5_mnist_model = train_model(
+        #     LeNet5(padding=0, output_size=5),
+        #     device=device,
+        #     train_loader=mnist_first5_train_loader,
+        #     test_loader=mnist_first5_test_loader,
+        #     config_args=args,
+        # )
 
-        print("Last 5 MNIST disjointed model")
-        last5_mnist_model = train_model(
-            LeNet5(padding=2, output_size=5),
-            device=device,
-            train_loader=mnist_last5_train_loader,
-            test_loader=mnist_last5_test_loader,
-            config_args=args,
-        )
+        # print("Last 5 MNIST disjointed model")
+        # last5_mnist_model = train_model(
+        #     LeNet5(padding=0, output_size=5),
+        #     device=device,
+        #     train_loader=mnist_last5_train_loader,
+        #     test_loader=mnist_last5_test_loader,
+        #     config_args=args,
+        # )
 
         print("Complete MNIST Model")
         mnist_model = train_model(
-            LeNet5(padding=2),
+            LeNet5(padding=0),
             device=device,
             train_loader=mnist_train_loader,
             test_loader=mnist_test_loader,
@@ -134,14 +136,14 @@ def main():
             config_args=args,
         )
 
-        torch.save(
-            first5_mnist_model.state_dict(),
-            args.output_dir + f"first5_mnist_model_{args.seeds[i]}",
-        )
-        torch.save(
-            last5_mnist_model.state_dict(),
-            args.output_dir + f"last5_mnist_model_{args.seeds[i]}",
-        )
+        # torch.save(
+        #     first5_mnist_model.state_dict(),
+        #     args.output_dir + f"first5_mnist_model_{args.seeds[i]}",
+        # )
+        # torch.save(
+        #     last5_mnist_model.state_dict(),
+        #     args.output_dir + f"last5_mnist_model_{args.seeds[i]}",
+        # )
         torch.save(
             mnist_model.state_dict(), args.output_dir + f"mnist_model_{args.seeds[i]}",
         )
@@ -151,28 +153,28 @@ def main():
         )
 
         # Lenet5 Half
-        args = Config()
-        print("First 5 MNIST disjointed model")
-        first5_mnist_halfed_model = train_model(
-            LeNet5Halfed(padding=2, output_size=5),
-            device=device,
-            train_loader=mnist_first5_train_loader,
-            test_loader=mnist_first5_test_loader,
-            config_args=args,
-        )
+        args.log_interval = ori_log_interval
+        # print("First 5 MNIST disjointed model")
+        # first5_mnist_halfed_model = train_model(
+        #     LeNet5Halfed(padding=0, output_size=5),
+        #     device=device,
+        #     train_loader=mnist_first5_train_loader,
+        #     test_loader=mnist_first5_test_loader,
+        #     config_args=args,
+        # )
 
-        print("Last 5 MNIST disjointed model")
-        last5_mnist_halfed_model = train_model(
-            LeNet5Halfed(padding=2, output_size=5),
-            device=device,
-            train_loader=mnist_last5_train_loader,
-            test_loader=mnist_last5_test_loader,
-            config_args=args,
-        )
+        # print("Last 5 MNIST disjointed model")
+        # last5_mnist_halfed_model = train_model(
+        #     LeNet5Halfed(padding=0, output_size=5),
+        #     device=device,
+        #     train_loader=mnist_last5_train_loader,
+        #     test_loader=mnist_last5_test_loader,
+        #     config_args=args,
+        # )
 
         print("Complete MNIST Model")
         mnist_halfed_model = train_model(
-            LeNet5Halfed(padding=2),
+            LeNet5Halfed(padding=0),
             device=device,
             train_loader=mnist_train_loader,
             test_loader=mnist_test_loader,
@@ -189,14 +191,14 @@ def main():
             config_args=args,
         )
 
-        torch.save(
-            first5_mnist_halfed_model.state_dict(),
-            args.output_dir + f"first5_mnist_halfed_model_{args.seeds[i]}",
-        )
-        torch.save(
-            last5_mnist_halfed_model.state_dict(),
-            args.output_dir + f"last5_mnist_halfed_model_{args.seeds[i]}",
-        )
+        # torch.save(
+        #     first5_mnist_halfed_model.state_dict(),
+        #     args.output_dir + f"first5_mnist_halfed_model_{args.seeds[i]}",
+        # )
+        # torch.save(
+        #     last5_mnist_halfed_model.state_dict(),
+        #     args.output_dir + f"last5_mnist_halfed_model_{args.seeds[i]}",
+        # )
         torch.save(
             mnist_halfed_model.state_dict(),
             args.output_dir + f"mnist_halfed_model_{args.seeds[i]}",

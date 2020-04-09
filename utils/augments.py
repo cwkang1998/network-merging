@@ -2,26 +2,12 @@ import torch
 from torch.distributions.poisson import Poisson
 from torchvision.transforms import (
     Compose,
-    Lambda,
     ToPILImage,
     ToTensor,
     RandomHorizontalFlip,
     RandomVerticalFlip,
-    RandomResizedCrop
+    RandomResizedCrop,
 )
-
-# Rgb transform
-transform_rgb = Lambda(lambda img: img.convert("RGB"))
-
-
-def grayscale_to_rgb(data):
-    images = []
-    for d in data:
-        image = ToPILImage()(d)
-        image = transform_rgb()(image)
-        image = ToTensor()(image)
-        images.append(image)
-    return torch.stack(images)
 
 
 # Gaussian Noise
@@ -68,4 +54,3 @@ def apply_random_crop(data, size):
         image = ToTensor()(image)
         images.append(image)
     return torch.stack(images)
-
