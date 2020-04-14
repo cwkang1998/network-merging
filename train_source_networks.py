@@ -104,7 +104,7 @@ def train_main(args):
     elif args.dataset == "cifar10":
         train_loader = cifar10_train_loader
         test_loader = cifar10_test_loader
-        args.output_size = 5
+        args.output_size = 10
         args.input_channel = 3
 
     # Initialize models based on architecture chosen
