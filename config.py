@@ -1,5 +1,6 @@
 from typing import List
 
+SEEDS = [770597, 600522, 416719, 306890, 201746, 156886, 929271, 247945, 5028, 436287]
 
 # Training settings
 class Config:

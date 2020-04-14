@@ -1,8 +1,8 @@
 import os
-import shutil
+# import shutil
 
 
 def create_op_dir(dir):
-    if os.path.exists(dir):
-        shutil.rmtree(dir)
-    os.makedirs(dir)
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+        # shutil.rmtree(dir)

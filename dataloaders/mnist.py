@@ -64,7 +64,11 @@ mnist_first5_train_loader = DataLoader(
         train=True,
         download=True,
         transform=transforms.Compose(
-            [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
+            [
+                transforms.Pad(2),
+                transforms.ToTensor(),
+                transforms.Normalize((0.1307,), (0.3081,)),
+            ]
         ),
     ),
     batch_size=args.mnist_batch_size,
@@ -77,7 +81,11 @@ mnist_first5_test_loader = DataLoader(
         end_idx=5,
         train=False,
         transform=transforms.Compose(
-            [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
+            [
+                transforms.Pad(2),
+                transforms.ToTensor(),
+                transforms.Normalize((0.1307,), (0.3081,)),
+            ]
         ),
     ),
     batch_size=args.test_batch_size,
@@ -92,7 +100,11 @@ mnist_last5_train_loader = DataLoader(
         train=True,
         download=True,
         transform=transforms.Compose(
-            [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
+            [
+                transforms.Pad(2),
+                transforms.ToTensor(),
+                transforms.Normalize((0.1307,), (0.3081,)),
+            ]
         ),
     ),
     batch_size=args.mnist_batch_size,
@@ -105,7 +117,11 @@ mnist_last5_test_loader = DataLoader(
         end_idx=10,
         train=False,
         transform=transforms.Compose(
-            [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
+            [
+                transforms.Pad(2),
+                transforms.ToTensor(),
+                transforms.Normalize((0.1307,), (0.3081,)),
+            ]
         ),
     ),
     batch_size=args.test_batch_size,
@@ -118,7 +134,11 @@ mnist_combined_train_loader = DataLoader(
         train=True,
         download=True,
         transform=transforms.Compose(
-            [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
+            [
+                transforms.Pad(2),
+                transforms.ToTensor(),
+                transforms.Normalize((0.1307,), (0.3081,)),
+            ]
         ),
     ),
     batch_size=args.mnist_batch_size,
@@ -130,7 +150,11 @@ mnist_combined_test_loader = DataLoader(
         args.data_dir,
         train=False,
         transform=transforms.Compose(
-            [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
+            [
+                transforms.Pad(2),
+                transforms.ToTensor(),
+                transforms.Normalize((0.1307,), (0.3081,)),
+            ]
         ),
     ),
     batch_size=args.test_batch_size,

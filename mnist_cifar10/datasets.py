@@ -78,13 +78,6 @@ class DualChannelDatasets(Dataset):
         return len(self.dataset)
 
     @staticmethod
-    def add_padding(padding, data):
-        image = transforms.ToPILImage()(data)
-        image = transforms.Pad(padding)(image)
-        image = transforms.ToTensor()(image)
-        return image
-
-    @staticmethod
     def grayscale_to_rgb(data):
         image = transforms.ToPILImage()(data)
         image = transform_rgb(image)
