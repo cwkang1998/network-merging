@@ -8,3 +8,6 @@ __pycache__/
 
 # Downloaded data and saved models
 cache/
+
+# Stats files
+stats/

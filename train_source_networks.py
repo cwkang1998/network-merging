@@ -1,10 +1,10 @@
+from argparse import ArgumentParser
 import numpy as np
 import torch
 import torch.nn.functional as F
 from torch import optim
-from utils.files import create_op_dir
+from utils.files import create_op_dir, save_stats
 from config import SEEDS
-from argparse import ArgumentParser
 from dataloaders.mnist import (
     mnist_first5_train_loader,
     mnist_first5_test_loader,
@@ -58,15 +58,13 @@ def test(args, model, device, test_loader):
             correct += pred.eq(target.view_as(pred)).sum().item()
 
     test_loss /= len(test_loader.dataset)
-
+    acc = 100.0 * correct / len(test_loader.dataset)
     print(
         "\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n".format(
-            test_loss,
-            correct,
-            len(test_loader.dataset),
-            100.0 * correct / len(test_loader.dataset),
+            test_loss, correct, len(test_loader.dataset), acc,
         )
     )
+    return test_loss, acc
 
 
 def train_model(model, device, train_loader, test_loader, config_args):
@@ -77,8 +75,8 @@ def train_model(model, device, train_loader, test_loader, config_args):
 
     for epoch in range(1, config_args.epochs + 1):
         train(config_args, model, device, train_loader, optimizer, epoch)
-        test(config_args, model, device, test_loader)
-    return model
+        test_loss, acc = test(config_args, model, device, test_loader)
+    return model, test_loss, acc
 
 
 def train_main(args):
@@ -120,6 +118,7 @@ def train_main(args):
 
     print(f"Dataset: {args.dataset}")
     print(f"Model: {args.arch}")
+    stats = []
 
     for i in range(len(args.seeds)):
         print(f"Iteration {i}, Seed {args.seeds[i]}")
@@ -127,7 +126,7 @@ def train_main(args):
         np.random.seed(args.seeds[i])
         torch.manual_seed(args.seeds[i])
 
-        model = train_model(
+        model, test_loss, acc = train_model(
             arch(input_channel=args.input_channel, output_size=args.output_size),
             device=device,
             train_loader=train_loader,
@@ -135,10 +134,20 @@ def train_main(args):
             config_args=args,
         )
 
+        # Save the model
         torch.save(
             model.state_dict(),
             args.output_dir + f"{args.dataset}_{args.arch}_{args.seeds[i]}",
         )
+
+        # save the stats in list first
+        stats.append(
+            {"iteration": i, "seed": args.seeds[i], "loss": test_loss, "acc": acc}
+        )
+
+    # Save all the stats
+    if args.stats:
+        save_stats(f"{args.dataset}_{args.arch}", stats, args.stats_dir)
 
 
 if __name__ == "__main__":
@@ -157,7 +166,8 @@ if __name__ == "__main__":
     parser.add_argument("--momentum", type=float, default=0.9)
     parser.add_argument("--no_cuda", type=bool, default=False)
     parser.add_argument("--log_interval", type=int, default=10)
-    parser.add_argument("--output_stats", type=bool, default=True)
+    parser.add_argument("--stats", type=bool, default=True)
+    parser.add_argument("--stats_dir", type=str, default="./stats/")
     parser.add_argument("--output_dir", type=str, default="./cache/models/")
 
     args = parser.parse_args()
