@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from torch import optim
 from utils.files import create_op_dir, save_stats
 from config import SEEDS
-from dataloaders.mnist import (
+from mnist.dataloaders import (
     mnist_first5_train_loader,
     mnist_first5_test_loader,
     mnist_last5_train_loader,
@@ -87,13 +87,13 @@ def train_main(args):
 
     # Initialize arguments based on dataset chosen
     if args.dataset == "first5_mnist":
-        train_loader = mnist_first5_train_loader
-        test_loader = mnist_first5_test_loader
+        train_loader = mnist_first5_train_loader(args.batch_size)
+        test_loader = mnist_first5_test_loader(args.test_batch_size)
         args.output_size = 5
         args.input_channel = 1
     elif args.dataset == "last5_mnist":
-        train_loader = mnist_last5_train_loader
-        test_loader = mnist_last5_test_loader
+        train_loader = mnist_last5_train_loader(args.batch_size)
+        test_loader = mnist_last5_test_loader(args.test_batch_size)
         args.output_size = 5
         args.input_channel = 1
     elif args.dataset == "mnist":
@@ -161,6 +161,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--arch", type=str, default="lenet5", choices=["lenet5", "lenet5_halfed"]
     )
+    parser.add_argument("--batch_size", type=int, default=512)
+    parser.add_argument("--test_batch_size", type=int, default=1000)
     parser.add_argument("--epochs", type=int, default=10)
     parser.add_argument("--lr", type=float, default=0.01, help="learning rate")
     parser.add_argument("--momentum", type=float, default=0.9)
