@@ -7,12 +7,12 @@ def create_op_dir(dirs):
         os.makedirs(dirs)
 
 
-def save_stats(name, stats_list, dirs):
+def save_results(name, result_list, dirs):
     create_op_dir(dirs)
     f = open(f"{dirs}{name}.csv", "w")
     with f:
-        fnames = list(stats_list[0].keys())
+        fnames = list(result_list[0].keys())
         writer = csv.DictWriter(f, fieldnames=fnames)
         writer.writeheader()
-        for s in stats_list:
+        for s in result_list:
             writer.writerow(s)

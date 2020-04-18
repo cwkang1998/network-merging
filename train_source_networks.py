@@ -3,7 +3,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from torch import optim
-from utils.files import create_op_dir, save_stats
+from utils.files import create_op_dir, save_results
 from config import SEEDS
 from mnist.dataloaders import (
     mnist_first5_train_loader,
@@ -118,7 +118,7 @@ def train_main(args):
 
     print(f"Dataset: {args.dataset}")
     print(f"Model: {args.arch}")
-    stats = []
+    results = []
 
     for i in range(len(args.seeds)):
         print(f"Iteration {i}, Seed {args.seeds[i]}")
@@ -140,14 +140,14 @@ def train_main(args):
             args.output_dir + f"{args.dataset}_{args.arch}_{args.seeds[i]}",
         )
 
-        # save the stats in list first
-        stats.append(
+        # save the results in list first
+        results.append(
             {"iteration": i, "seed": args.seeds[i], "loss": test_loss, "acc": acc}
         )
 
-    # Save all the stats
-    if args.stats:
-        save_stats(f"{args.dataset}_{args.arch}", stats, args.stats_dir)
+    # Save all the results
+    if args.save_results:
+        save_results(f"{args.dataset}_{args.arch}", results, args.results_dir)
 
 
 if __name__ == "__main__":
@@ -168,8 +168,8 @@ if __name__ == "__main__":
     parser.add_argument("--momentum", type=float, default=0.9)
     parser.add_argument("--no_cuda", type=bool, default=False)
     parser.add_argument("--log_interval", type=int, default=10)
-    parser.add_argument("--stats", type=bool, default=True)
-    parser.add_argument("--stats_dir", type=str, default="./stats/")
+    parser.add_argument("--save_results", type=bool, default=True)
+    parser.add_argument("--results_dir", type=str, default="./results/source_net/")
     parser.add_argument("--output_dir", type=str, default="./cache/models/")
 
     args = parser.parse_args()

@@ -27,7 +27,7 @@ class DisjointMNIST(MNIST):
             for i in range(len(self.targets))
             if self.targets[i] in list(range(self.start_idx, self.end_idx))
         ]
-        self.data = self.data[sliced_labels_idx] - self.start_idx
+        self.data = self.data[sliced_labels_idx]
         self.targets = self.targets[sliced_labels_idx] - self.start_idx
 
 
