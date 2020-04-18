@@ -1,8 +1,7 @@
-import torch
 from torch.utils.data import Dataset
 from torchvision import transforms
 from torchvision.datasets import MNIST, CIFAR10
-from config import Config
+from config import DATA_DIR
 
 mnist_classes = [
     "0 - zero",
@@ -92,10 +91,8 @@ class DualChannelDatasets(Dataset):
         return image
 
 
-args = Config()
-
 mnist_train_dataset = MNIST(
-    args.data_dir,
+    DATA_DIR,
     train=True,
     download=True,
     transform=transforms.Compose(
@@ -107,7 +104,7 @@ mnist_train_dataset = MNIST(
     ),
 )
 mnist_test_dataset = MNIST(
-    args.data_dir,
+    DATA_DIR,
     train=False,
     transform=transforms.Compose(
         [
@@ -118,7 +115,7 @@ mnist_test_dataset = MNIST(
     ),
 )
 cifar10_train_dataset = CIFAR10(
-    args.data_dir,
+    DATA_DIR,
     train=True,
     download=True,
     transform=transforms.Compose(
@@ -129,7 +126,7 @@ cifar10_train_dataset = CIFAR10(
     ),
 )
 cifar10_test_dataset = CIFAR10(
-    args.data_dir,
+    DATA_DIR,
     train=False,
     download=True,
     transform=transforms.Compose(
@@ -141,7 +138,7 @@ cifar10_test_dataset = CIFAR10(
 )
 
 extended_mnist_dataset = ExtendedMNIST(
-    args.data_dir,
+    DATA_DIR,
     train=False,
     download=True,
     transform=transforms.Compose(
@@ -155,7 +152,7 @@ extended_mnist_dataset = ExtendedMNIST(
 )
 
 extended_cifar_dataset = ExtendedCIFAR10(
-    args.data_dir,
+    DATA_DIR,
     train=False,
     transform=transforms.Compose(
         [

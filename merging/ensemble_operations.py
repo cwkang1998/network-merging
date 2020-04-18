@@ -1,6 +1,5 @@
 import torch
 import torch.nn.functional as F
-import matplotlib.pyplot as plt
 from utils.augments import (
     apply_gaussian,
     apply_poisson,

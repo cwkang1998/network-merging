@@ -3,7 +3,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from torch import optim
-from utils.files import create_op_dir, save_results
+from utils import create_op_dir, save_results
 from config import SEEDS
 from mnist.dataloaders import (
     mnist_first5_train_loader,

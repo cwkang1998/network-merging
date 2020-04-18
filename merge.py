@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 import numpy as np
 import torch
-from utils.files import save_results
+from utils import save_results
 from mnist.dataloaders import (
     mnist_first5_test_loader,
     mnist_last5_test_loader,

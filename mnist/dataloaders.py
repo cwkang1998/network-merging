@@ -1,5 +1,4 @@
 from torch.utils.data import DataLoader
-
 from .datasets import (
     mnist_first5_train_dataset,
     mnist_first5_test_dataset,
