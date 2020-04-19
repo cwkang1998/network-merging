@@ -97,13 +97,13 @@ def train_main(args):
         args.output_size = 5
         args.input_channel = 1
     elif args.dataset == "mnist":
-        train_loader = mnist_train_loader
-        test_loader = mnist_test_loader
+        train_loader = mnist_train_loader(args.batch_size)
+        test_loader = mnist_test_loader(args.test_batch_size)
         args.output_size = 10
         args.input_channel = 1
     elif args.dataset == "cifar10":
-        train_loader = cifar10_train_loader
-        test_loader = cifar10_test_loader
+        train_loader = cifar10_train_loader(args.batch_size)
+        test_loader = cifar10_test_loader(args.test_batch_size)
         args.output_size = 10
         args.input_channel = 3
 
