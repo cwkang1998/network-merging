@@ -7,13 +7,14 @@ from mnist.dataloaders import (
     mnist_last5_test_loader,
     mnist_combined_test_loader,
 )
-from mnist_cifar10.dataloaders import (
-    mnist_test_loader,
-    cifar10_test_loader,
-    dual_channel_cifar10_test_loader,
-    dual_channel_mnist_test_loader,
-)
-from merging import logits_statistics
+
+# from mnist_cifar10.dataloaders import (
+#     mnist_test_loader,
+#     cifar10_test_loader,
+#     dual_channel_cifar10_test_loader,
+#     dual_channel_mnist_test_loader,
+# )
+from mnist import logits_statistics, multi_pass_aug_mean, multi_pass_aug_voting
 from archs.lenet5 import LeNet5, LeNet5Halfed
 from config import SEEDS
 
@@ -27,13 +28,13 @@ def main(args):
         args.m1_input_channel = 1
         args.m2_input_channel = 1
         args.output_size = 5
-    elif args.dataset == "mnist_cifar10":
-        test_loader = mnist_last5_test_loader(args.test_batch_size)
-        args.d1 = "mnist"
-        args.d2 = "cifar10"
-        args.m1_input_channel = 1
-        args.m2_input_channel = 3
-        args.output_size = 10
+    # elif args.dataset == "mnist_cifar10":
+    #     test_loader = mnist_last5_test_loader(args.test_batch_size)
+    #     args.d1 = "mnist"
+    #     args.d2 = "cifar10"
+    #     args.m1_input_channel = 1
+    #     args.m2_input_channel = 3
+    #     args.output_size = 10
 
     # Initialize models based on architecture chosen
     if args.arch == "lenet5":
@@ -44,8 +45,10 @@ def main(args):
     # Initialize logits statistics function
     if args.experiment == "logits_statistics":
         experiment = logits_statistics
-    elif args.experiment == "multi_pass_augment":
-        pass
+    elif args.experiment == "multi_pass_aug_mean":
+        experiment = multi_pass_aug_mean
+    elif args.experiment == "multi_pass_aug_voting":
+        experiment = multi_pass_aug_voting
     elif args.experiment == "smart_coord":
         pass
 
@@ -85,7 +88,9 @@ def main(args):
     # Save the results
     if args.save_results:
         save_results(
-            f"{args.dataset}_{args.arch}", results, f"{args.results_dir}{args.experiment}/"
+            f"{args.dataset}_{args.arch}",
+            results,
+            f"{args.results_dir}{args.experiment}/",
         )
 
 
@@ -104,7 +109,12 @@ if __name__ == "__main__":
         "--experiment",
         type=str,
         default="logits_statistics",
-        choices=["logits_statistics", "multi_pass_augment", "smart_coord"],
+        choices=[
+            "logits_statistics",
+            "multi_pass_aug_mean",
+            "multi_pass_aug_voting",
+            "smart_coord",
+        ],
     )
     parser.add_argument("--test_batch_size", type=int, default=1000)
     parser.add_argument("--epochs", type=int, default=10)
