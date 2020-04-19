@@ -23,7 +23,7 @@ def apply_poisson(device, data, rate=0.5):
     return data + noise
 
 
-def apply_hflip(data):
+def apply_hflip(device, data):
     images = []
     transform = Compose([RandomHorizontalFlip(p=1)])
     for d in data:
@@ -34,7 +34,7 @@ def apply_hflip(data):
     return torch.stack(images)
 
 
-def apply_vflip(data):
+def apply_vflip(device, data):
     images = []
     transform = Compose([RandomVerticalFlip(p=1)])
     for d in data:
@@ -45,7 +45,7 @@ def apply_vflip(data):
     return torch.stack(images)
 
 
-def apply_random_crop(data, size):
+def apply_random_crop(device, data, size=32):
     images = []
     transform = Compose([RandomResizedCrop(size=size)])
     for d in data:
