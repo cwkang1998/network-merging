@@ -2,19 +2,19 @@ from argparse import ArgumentParser
 import numpy as np
 import torch
 from utils import save_results
+import mnist
+import mnist_cifar10
 from mnist.dataloaders import (
     mnist_first5_test_loader,
     mnist_last5_test_loader,
     mnist_combined_test_loader,
 )
-
-# from mnist_cifar10.dataloaders import (
-#     mnist_test_loader,
-#     cifar10_test_loader,
-#     dual_channel_cifar10_test_loader,
-#     dual_channel_mnist_test_loader,
-# )
-from mnist import logits_statistics, multi_pass_aug_mean, multi_pass_aug_voting
+from mnist_cifar10.dataloaders import (
+    mnist_test_loader,
+    cifar10_test_loader,
+    dual_channel_cifar10_test_loader,
+    dual_channel_mnist_test_loader,
+)
 from archs.lenet5 import LeNet5, LeNet5Halfed
 from config import SEEDS
 
@@ -28,13 +28,18 @@ def main(args):
         args.m1_input_channel = 1
         args.m2_input_channel = 1
         args.output_size = 5
-    # elif args.dataset == "mnist_cifar10":
-    #     test_loader = mnist_last5_test_loader(args.test_batch_size)
-    #     args.d1 = "mnist"
-    #     args.d2 = "cifar10"
-    #     args.m1_input_channel = 1
-    #     args.m2_input_channel = 3
-    #     args.output_size = 10
+        m = mnist
+    elif args.dataset == "mnist_cifar10":
+        test_loader = [
+            dual_channel_mnist_test_loader(args.test_batch_size),
+            dual_channel_cifar10_test_loader(args.test_batch_size),
+        ]
+        args.d1 = "mnist"
+        args.d2 = "cifar10"
+        args.m1_input_channel = 1
+        args.m2_input_channel = 3
+        args.output_size = 10
+        m = mnist_cifar10
 
     # Initialize models based on architecture chosen
     if args.arch == "lenet5":
@@ -44,11 +49,11 @@ def main(args):
 
     # Initialize logits statistics function
     if args.experiment == "logits_statistics":
-        experiment = logits_statistics
+        experiment = m.logits_statistics
     elif args.experiment == "multi_pass_aug_mean":
-        experiment = multi_pass_aug_mean
+        experiment = m.multi_pass_aug_mean
     elif args.experiment == "multi_pass_aug_voting":
-        experiment = multi_pass_aug_voting
+        experiment = m.multi_pass_aug_voting
     elif args.experiment == "smart_coord":
         pass
 
