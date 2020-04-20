@@ -18,7 +18,7 @@ from mnist_cifar10.dataloaders import (
     cifar10_test_loader,
 )
 from archs.lenet5 import LeNet5, LeNet5Halfed
-
+from archs.resnet import ResNet18
 
 def train(args, model, device, train_loader, optimizer, epoch):
     model.train()
@@ -112,6 +112,8 @@ def train_main(args):
         arch = LeNet5
     elif args.arch == "lenet5_halfed":
         arch = LeNet5Halfed
+    elif args.arch == "resnet18":
+        arch = ResNet18
 
     # Create the directory for saving if it does not exist
     create_op_dir(args.output_dir)
@@ -159,7 +161,10 @@ if __name__ == "__main__":
         choices=["first5_mnist", "last5_mnist", "mnist", "cifar10"],
     )
     parser.add_argument(
-        "--arch", type=str, default="lenet5", choices=["lenet5", "lenet5_halfed"]
+        "--arch",
+        type=str,
+        default="lenet5",
+        choices=["lenet5", "lenet5_halfed", "resnet18"],
     )
     parser.add_argument("--batch_size", type=int, default=512)
     parser.add_argument("--test_batch_size", type=int, default=1000)

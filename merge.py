@@ -10,6 +10,7 @@ from mnist_cifar10.dataloaders import (
     dual_channel_mnist_test_loader
 )
 from archs.lenet5 import LeNet5, LeNet5Halfed
+from archs.resnet import ResNet18
 from archs.pan import PAN
 from config import SEEDS
 
@@ -43,6 +44,9 @@ def main(args):
     elif args.arch == "lenet5_halfed":
         arch = LeNet5Halfed
         args.feature_size = 60
+    elif args.arch == "resnet18":
+        arch = ResNet18
+        args.feature_size = 512
 
     # Initialize logits statistics function
     if args.experiment == "logits_statistics":
@@ -88,14 +92,14 @@ def main(args):
         # Running the experiment
         if args.experiment == "smart_coord":
             # PAN with logits
-            pan1 = PAN(input_size=pan_input_size)
+            pan1 = PAN(input_size=pan_input_size).to(args.device)
             pan1.load_state_dict(
                 torch.load(
                     args.pan_dir
                     + f"pan_{args.pan_type}_{args.dataset}({args.d1})_{args.arch}_{args.seeds[i]}"
                 )
             )
-            pan2 = PAN(input_size=pan_input_size)
+            pan2 = PAN(input_size=pan_input_size).to(args.device)
             pan2.load_state_dict(
                 torch.load(
                     args.pan_dir
@@ -129,7 +133,10 @@ if __name__ == "__main__":
         choices=["disjoint_mnist", "mnist_cifar10"],
     )
     parser.add_argument(
-        "--arch", type=str, default="lenet5", choices=["lenet5", "lenet5_halfed"]
+        "--arch",
+        type=str,
+        default="lenet5",
+        choices=["lenet5", "lenet5_halfed", "resnet18"],
     )
     parser.add_argument(
         "--experiment",

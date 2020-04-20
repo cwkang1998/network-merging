@@ -12,9 +12,10 @@ from mnist_cifar10.dataloaders import (
     mnist_cifar10_single_channel_train_loader,
     mnist_cifar10_single_channel_test_loader,
     mnist_cifar10_3_channel_train_loader,
-    mnist_cifar10_3_channel_test_loader
+    mnist_cifar10_3_channel_test_loader,
 )
 from archs.lenet5 import LeNet5, LeNet5Halfed
+from archs.resnet import ResNet18
 from archs.pan import PAN
 
 
@@ -156,6 +157,9 @@ def train_pan(args):
     elif args.arch == "lenet5_halfed":
         arch = LeNet5Halfed
         feature_size = 60
+    elif args.arch == "resnet18":
+        arch = ResNet18
+        feature_size = 512
 
     # Initialize PAN based on its type
     if args.pan_type == "feature":
@@ -186,7 +190,7 @@ def train_pan(args):
             torch.load(args.model_dir + f"{args.d1}_{args.arch}_{args.seeds[i]}")
         )
         pan1, pan1_test_loss, pan1_acc = train_model(
-            pan=PAN(input_size=pan_input_size),
+            pan=PAN(input_size=pan_input_size).to(device),
             model=model1,
             device=device,
             train_loader=train_loaders[0],
@@ -202,7 +206,7 @@ def train_pan(args):
             torch.load(args.model_dir + f"{args.d2}_{args.arch}_{args.seeds[i]}")
         )
         pan2, pan2_test_loss, pan2_acc = train_model(
-            pan=PAN(input_size=pan_input_size),
+            pan=PAN(input_size=pan_input_size).to(device),
             model=model2,
             device=device,
             train_loader=train_loaders[1],
@@ -264,7 +268,10 @@ if __name__ == "__main__":
         choices=["disjoint_mnist", "mnist_cifar10"],
     )
     parser.add_argument(
-        "--arch", type=str, default="lenet5", choices=["lenet5", "lenet5_halfed"]
+        "--arch",
+        type=str,
+        default="lenet5",
+        choices=["lenet5", "lenet5_halfed", "resnet18"],
     )
     parser.add_argument(
         "--pan_type", type=str, default="feature", choices=["feature", "logits"]
