@@ -4,16 +4,10 @@ import torch
 from utils import save_results
 import mnist
 import mnist_cifar10
-from mnist.dataloaders import (
-    mnist_first5_test_loader,
-    mnist_last5_test_loader,
-    mnist_combined_test_loader,
-)
+from mnist.dataloaders import mnist_combined_test_loader
 from mnist_cifar10.dataloaders import (
-    mnist_test_loader,
-    cifar10_test_loader,
     dual_channel_cifar10_test_loader,
-    dual_channel_mnist_test_loader,
+    dual_channel_mnist_test_loader
 )
 from archs.lenet5 import LeNet5, LeNet5Halfed
 from archs.pan import PAN

@@ -9,7 +9,7 @@ from mnist.smart_coord import craft_first_5_target, craft_last_5_target
 from mnist.dataloaders import mnist_combined_train_loader, mnist_combined_test_loader
 from mnist_cifar10.smart_coord import craft_mnist_target, craft_cifar10_target
 from mnist_cifar10.dataloaders import (
-    mnist_cifar10_single_channel_train_loader, 
+    mnist_cifar10_single_channel_train_loader,
     mnist_cifar10_single_channel_test_loader,
     mnist_cifar10_3_channel_train_loader,
     mnist_cifar10_3_channel_test_loader
