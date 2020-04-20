@@ -1,4 +1,4 @@
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, ConcatDataset
 from torchvision import transforms
 from torchvision.datasets import MNIST, CIFAR10
 from config import DATA_DIR
@@ -137,7 +137,9 @@ cifar10_test_dataset = CIFAR10(
     ),
 )
 
-extended_mnist_dataset = ExtendedMNIST(
+
+# Dataset for testing the mnist_cifar10 combined models
+extended_mnist_test_dataset = ExtendedMNIST(
     DATA_DIR,
     train=False,
     download=True,
@@ -151,9 +153,10 @@ extended_mnist_dataset = ExtendedMNIST(
     extended_classes=cifar10_classes,
 )
 
-extended_cifar_dataset = ExtendedCIFAR10(
+extended_cifar10_test_dataset = ExtendedCIFAR10(
     DATA_DIR,
     train=False,
+    download=True,
     transform=transforms.Compose(
         [
             transforms.ToTensor(),
@@ -163,10 +166,149 @@ extended_cifar_dataset = ExtendedCIFAR10(
     extended_classes=mnist_classes,
 )
 
-dual_channel_mnist_dataset = DualChannelDatasets(
-    dataset=extended_mnist_dataset, initial_channels=1
+dual_channel_mnist_test_dataset = DualChannelDatasets(
+    dataset=extended_mnist_test_dataset, initial_channels=1
 )
 
-dual_channel_cifar10_dataset = DualChannelDatasets(
-    dataset=extended_cifar_dataset, initial_channels=3
+dual_channel_cifar10_test_dataset = DualChannelDatasets(
+    dataset=extended_cifar10_test_dataset, initial_channels=3
+)
+
+
+# Dataset for training PAN purpose
+extended_mnist_single_channel_train_dataset = ExtendedMNIST(
+    DATA_DIR,
+    train=True,
+    download=True,
+    transform=transforms.Compose(
+        [
+            transforms.Pad(2),
+            transforms.ToTensor(),
+            transforms.Normalize((0.1307,), (0.3081,)),
+        ]
+    ),
+    extended_classes=cifar10_classes,
+)
+
+extended_cifar10_single_channel_train_dataset = ExtendedCIFAR10(
+    DATA_DIR,
+    train=True,
+    download=True,
+    transform=transforms.Compose(
+        [
+            transforms.ToTensor(),
+            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+            transforms.ToPILImage(),
+            transforms.Grayscale(),
+            transforms.ToTensor()
+        ]
+    ),
+    extended_classes=mnist_classes,
+)
+
+
+extended_mnist_single_channel_test_dataset = ExtendedMNIST(
+    DATA_DIR,
+    train=False,
+    download=True,
+    transform=transforms.Compose(
+        [
+            transforms.Pad(2),
+            transforms.ToTensor(),
+            transforms.Normalize((0.1307,), (0.3081,)),
+        ]
+    ),
+    extended_classes=cifar10_classes,
+)
+
+extended_cifar10_single_channel_test_dataset = ExtendedCIFAR10(
+    DATA_DIR,
+    train=False,
+    download=True,
+    transform=transforms.Compose(
+        [
+            transforms.ToTensor(),
+            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+            transforms.ToPILImage(),
+            transforms.Grayscale(),
+            transforms.ToTensor()
+        ]
+    ),
+    extended_classes=mnist_classes,
+)
+
+
+extended_mnist_3_channel_train_dataset = ExtendedMNIST(
+    DATA_DIR,
+    train=True,
+    download=True,
+    transform=transforms.Compose(
+        [
+            transforms.Pad(2),
+            transforms.ToTensor(),
+            transforms.Normalize((0.1307,), (0.3081,)),
+            transforms.ToPILImage(),
+            transform_rgb,
+            transforms.ToTensor()
+        ]
+    ),
+    extended_classes=cifar10_classes,
+)
+
+extended_cifar10_3_channel_train_dataset = ExtendedCIFAR10(
+    DATA_DIR,
+    train=True,
+    download=True,
+    transform=transforms.Compose(
+        [
+            transforms.ToTensor(),
+            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+        ]
+    ),
+    extended_classes=mnist_classes,
+)
+
+extended_mnist_3_channel_test_dataset = ExtendedMNIST(
+    DATA_DIR,
+    train=False,
+    download=True,
+    transform=transforms.Compose(
+        [
+            transforms.Pad(2),
+            transforms.ToTensor(),
+            transforms.Normalize((0.1307,), (0.3081,)),
+            transforms.ToPILImage(),
+            transform_rgb,
+            transforms.ToTensor()
+        ]
+    ),
+    extended_classes=cifar10_classes,
+)
+
+extended_cifar10_3_channel_test_dataset = ExtendedCIFAR10(
+    DATA_DIR,
+    train=False,
+    download=True,
+    transform=transforms.Compose(
+        [
+            transforms.ToTensor(),
+            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+        ]
+    ),
+    extended_classes=mnist_classes,
+)
+
+
+# Concat the datasets
+mnist_cifar10_single_channel_train_dataset = ConcatDataset(
+    [extended_mnist_single_channel_train_dataset, extended_cifar10_single_channel_train_dataset]
+)
+mnist_cifar10_single_channel_test_dataset = ConcatDataset(
+    [extended_mnist_single_channel_test_dataset, extended_cifar10_single_channel_test_dataset]
+)
+mnist_cifar10_3_channel_train_dataset = ConcatDataset(
+    [extended_mnist_3_channel_train_dataset, extended_cifar10_3_channel_train_dataset]
+)
+mnist_cifar10_3_channel_test_dataset = ConcatDataset(
+    [extended_mnist_3_channel_test_dataset, extended_cifar10_3_channel_test_dataset]
 )

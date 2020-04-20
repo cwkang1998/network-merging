@@ -1,5 +1,6 @@
 from .logits_stats import test, naive, std, ratio, overall_ratio, thirdQ
 from .multi_pass_aug import mean_agg_test, voting_agg_test
+from .smart_coord import smart_coord_test
 from augments import (
     apply_gaussian,
     apply_poisson,
@@ -77,4 +78,12 @@ def multi_pass_aug_voting(args, model1, model2, device, test_loader):
         test_loss, acc = voting_agg_test(args, model1, model2, a, device, test_loader)
         result.append({"methods": AUGS_DESCP[i], "test_loss": test_loss, "acc": acc})
 
+    return result
+
+
+def smart_coordinator(args, model1, model2, pan1, pan2, device, test_loader):
+    result = []
+    print(f"PAN type: {args.pan_type}")
+    test_loss, acc = smart_coord_test(args, model1, model2, pan1, pan2, device, test_loader)
+    result.append({"test_loss": test_loss, "acc": acc})
     return result

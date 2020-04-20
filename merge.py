@@ -16,6 +16,7 @@ from mnist_cifar10.dataloaders import (
     dual_channel_mnist_test_loader,
 )
 from archs.lenet5 import LeNet5, LeNet5Halfed
+from archs.pan import PAN
 from config import SEEDS
 
 
@@ -44,8 +45,10 @@ def main(args):
     # Initialize models based on architecture chosen
     if args.arch == "lenet5":
         arch = LeNet5
+        args.feature_size = 120
     elif args.arch == "lenet5_halfed":
         arch = LeNet5Halfed
+        args.feature_size = 60
 
     # Initialize logits statistics function
     if args.experiment == "logits_statistics":
@@ -55,7 +58,13 @@ def main(args):
     elif args.experiment == "multi_pass_aug_voting":
         experiment = m.multi_pass_aug_voting
     elif args.experiment == "smart_coord":
-        pass
+        experiment = m.smart_coordinator
+
+    # Pan settings
+    if args.pan_type == "feature":
+        pan_input_size = args.feature_size
+    elif args.pan_type == "logits":
+        pan_input_size = args.output_size
 
     # Running the test
     print(f"Dataset: {args.dataset}")
@@ -83,7 +92,25 @@ def main(args):
         )
 
         # Running the experiment
-        result = experiment(args, model1, model2, device, test_loader)
+        if args.experiment == "smart_coord":
+            # PAN with logits
+            pan1 = PAN(input_size=pan_input_size)
+            pan1.load_state_dict(
+                torch.load(
+                    args.pan_dir
+                    + f"pan_{args.pan_type}_{args.dataset}({args.d1})_{args.arch}_{args.seeds[i]}"
+                )
+            )
+            pan2 = PAN(input_size=pan_input_size)
+            pan2.load_state_dict(
+                torch.load(
+                    args.pan_dir
+                    + f"pan_{args.pan_type}_{args.dataset}({args.d2})_{args.arch}_{args.seeds[i]}"
+                )
+            )
+            result = experiment(args, model1, model2, pan1, pan2, device, test_loader)
+        else:
+            result = experiment(args, model1, model2, device, test_loader)
 
         # Adding more info to the result to be saved
         for r in result:
@@ -121,6 +148,9 @@ if __name__ == "__main__":
             "smart_coord",
         ],
     )
+    parser.add_argument(
+        "--pan_type", type=str, default="feature", choices=["feature", "logits"]
+    )
     parser.add_argument("--test_batch_size", type=int, default=1000)
     parser.add_argument("--epochs", type=int, default=10)
     parser.add_argument("--lr", type=float, default=0.01, help="learning rate")
@@ -130,6 +160,7 @@ if __name__ == "__main__":
     parser.add_argument("--save_results", type=bool, default=True)
     parser.add_argument("--results_dir", type=str, default="./results/merge/")
     parser.add_argument("--output_dir", type=str, default="./cache/models/")
+    parser.add_argument("--pan_dir", type=str, default="./cache/models/pan/")
 
     args = parser.parse_args()
 

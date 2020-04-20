@@ -1,3 +1,4 @@
+from torch.utils.data import Dataset
 from torchvision import transforms
 from torchvision.datasets import MNIST
 from config import DATA_DIR
@@ -90,6 +91,20 @@ mnist_last5_test_dataset = DisjointMNIST(
         ]
     ),
 )
+
+mnist_combined_train_dataset = MNIST(
+    DATA_DIR,
+    train=True,
+    download=True,
+    transform=transforms.Compose(
+        [
+            transforms.Pad(2),
+            transforms.ToTensor(),
+            transforms.Normalize((0.1307,), (0.3081,)),
+        ]
+    ),
+)
+
 
 mnist_combined_test_dataset = MNIST(
     DATA_DIR,
