@@ -33,7 +33,7 @@ def train(args, pan, model, device, train_loader, target_create_fn, optimizer, e
         else:
             raise NotImplementedError("Not an eligible pan type.")
 
-        pan_target = target_create_fn(target)
+        pan_target = target_create_fn(target).to(device)
         loss = F.cross_entropy(output, pan_target)
         loss.backward()
         optimizer.step()
@@ -66,7 +66,7 @@ def test(args, pan, model, device, test_loader, target_create_fn):
             else:
                 raise NotImplementedError("Not an eligible pan type.")
 
-            pan_target = target_create_fn(target)
+            pan_target = target_create_fn(target).to(device)
             test_loss += F.cross_entropy(
                 output, pan_target, reduction="sum"
             ).item()  # sum up batch loss
