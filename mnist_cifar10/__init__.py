@@ -7,9 +7,12 @@ from augments import (
     apply_hflip,
     apply_vflip,
     apply_random_crop,
+    apply_sharpen
 )
 
 AUGS_DESCP = [
+    "1 sharpen",
+    "diff alpha sharpen",
     "1 gauss",
     "5 gauss",
     "diff std gauss",
@@ -21,6 +24,14 @@ AUGS_DESCP = [
 ]
 
 AUGS = [
+    [{"iter": 1, "func": apply_sharpen, "kwargs": {}}],
+    [
+        {"iter": 1, "func": apply_sharpen, "kwargs": {"alpha": 0.1}},
+        {"iter": 1, "func": apply_sharpen, "kwargs": {"alpha": 0.3}},
+        {"iter": 1, "func": apply_sharpen, "kwargs": {"alpha": 0.5}},
+        {"iter": 1, "func": apply_sharpen, "kwargs": {"alpha": 0.7}},
+        {"iter": 1, "func": apply_sharpen, "kwargs": {"alpha": 0.9}},
+    ],
     [{"iter": 1, "func": apply_gaussian, "kwargs": {}}],
     [{"iter": 5, "func": apply_gaussian, "kwargs": {}}],
     [

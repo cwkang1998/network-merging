@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 from torch.distributions.poisson import Poisson
 from torchvision.transforms import (
@@ -8,7 +9,7 @@ from torchvision.transforms import (
     RandomVerticalFlip,
     RandomResizedCrop,
 )
-
+import imgaug.augmenters as iaa
 
 # Gaussian Noise
 def apply_gaussian(device, data, std=1, mean=0):
@@ -51,6 +52,17 @@ def apply_random_crop(device, data, size=32):
     for d in data:
         image = ToPILImage()(d)
         image = transform(image)
+        image = ToTensor()(image)
+        images.append(image)
+    return torch.stack(images)
+
+
+def apply_sharpen(device, data, alpha=0.5):
+    images = []
+    sharpen = iaa.Sharpen(alpha=0.5)
+    for d in data:
+        image = ToPILImage()(d)
+        image = sharpen.augment_image(np.array(image))
         image = ToTensor()(image)
         images.append(image)
     return torch.stack(images)

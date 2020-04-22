@@ -7,9 +7,12 @@ from augments import (
     apply_hflip,
     apply_vflip,
     apply_random_crop,
+    apply_sharpen,
 )
 
 AUGS_DESCP = [
+    "1 sharpen",
+    "diff alpha sharpen",
     "1 gauss",
     "5 gauss",
     "diff std gauss",
@@ -17,10 +20,18 @@ AUGS_DESCP = [
     "5 poisson",
     "diff rate poisson",
     "h and v flip",
-    "random crop"
+    "random crop",
 ]
 
 AUGS = [
+    [{"iter": 1, "func": apply_sharpen, "kwargs": {}}],
+    [
+        {"iter": 1, "func": apply_sharpen, "kwargs": {"alpha": 0.1}},
+        {"iter": 1, "func": apply_sharpen, "kwargs": {"alpha": 0.3}},
+        {"iter": 1, "func": apply_sharpen, "kwargs": {"alpha": 0.5}},
+        {"iter": 1, "func": apply_sharpen, "kwargs": {"alpha": 0.7}},
+        {"iter": 1, "func": apply_sharpen, "kwargs": {"alpha": 0.9}},
+    ],
     [{"iter": 1, "func": apply_gaussian, "kwargs": {}}],
     [{"iter": 5, "func": apply_gaussian, "kwargs": {}}],
     [
@@ -84,6 +95,8 @@ def multi_pass_aug_voting(args, model1, model2, device, test_loader):
 def smart_coordinator(args, model1, model2, pan1, pan2, device, test_loader):
     result = []
     print(f"PAN type: {args.pan_type}")
-    test_loss, acc = smart_coord_test(args, model1, model2, pan1, pan2, device, test_loader)
+    test_loss, acc = smart_coord_test(
+        args, model1, model2, pan1, pan2, device, test_loader
+    )
     result.append({"test_loss": test_loss, "acc": acc})
     return result
