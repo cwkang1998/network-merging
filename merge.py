@@ -7,7 +7,7 @@ import mnist_cifar10
 from mnist.dataloaders import mnist_combined_test_loader
 from mnist_cifar10.dataloaders import (
     dual_channel_cifar10_test_loader,
-    dual_channel_mnist_test_loader
+    dual_channel_mnist_test_loader,
 )
 from archs.lenet5 import LeNet5, LeNet5Halfed
 from archs.resnet import ResNet18
@@ -80,13 +80,19 @@ def main(args):
             input_channel=args.m1_input_channel, output_size=args.output_size
         ).to(args.device)
         model1.load_state_dict(
-            torch.load(args.output_dir + f"{args.d1}_{args.arch}_{args.seeds[i]}")
+            torch.load(
+                args.output_dir + f"{args.d1}_{args.arch}_{args.seeds[i]}",
+                map_location=torch.device("cpu"),
+            )
         )
         model2 = arch(
             input_channel=args.m2_input_channel, output_size=args.output_size
         ).to(args.device)
         model2.load_state_dict(
-            torch.load(args.output_dir + f"{args.d2}_{args.arch}_{args.seeds[i]}")
+            torch.load(
+                args.output_dir + f"{args.d2}_{args.arch}_{args.seeds[i]}",
+                map_location=torch.device("cpu"),
+            )
         )
 
         # Running the experiment
@@ -96,14 +102,16 @@ def main(args):
             pan1.load_state_dict(
                 torch.load(
                     args.pan_dir
-                    + f"pan_{args.pan_type}_{args.dataset}({args.d1})_{args.arch}_{args.seeds[i]}"
+                    + f"pan_{args.pan_type}_{args.dataset}({args.d1})_{args.arch}_{args.seeds[i]}",
+                    map_location=torch.device("cpu"),
                 )
             )
             pan2 = PAN(input_size=pan_input_size).to(args.device)
             pan2.load_state_dict(
                 torch.load(
                     args.pan_dir
-                    + f"pan_{args.pan_type}_{args.dataset}({args.d2})_{args.arch}_{args.seeds[i]}"
+                    + f"pan_{args.pan_type}_{args.dataset}({args.d2})_{args.arch}_{args.seeds[i]}",
+                    map_location=torch.device("cpu"),
                 )
             )
             result = experiment(args, model1, model2, pan1, pan2, device, test_loader)

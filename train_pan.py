@@ -187,7 +187,10 @@ def train_pan(args):
             input_channel=args.m1_input_channel, output_size=args.output_size
         ).to(device)
         model1.load_state_dict(
-            torch.load(args.model_dir + f"{args.d1}_{args.arch}_{args.seeds[i]}")
+            torch.load(
+                args.model_dir + f"{args.d1}_{args.arch}_{args.seeds[i]}",
+                map_location=torch.device("cpu"),
+            )
         )
         pan1, pan1_test_loss, pan1_acc = train_model(
             pan=PAN(input_size=pan_input_size).to(device),
@@ -203,7 +206,10 @@ def train_pan(args):
             input_channel=args.m2_input_channel, output_size=args.output_size
         ).to(device)
         model2.load_state_dict(
-            torch.load(args.model_dir + f"{args.d2}_{args.arch}_{args.seeds[i]}")
+            torch.load(
+                args.model_dir + f"{args.d2}_{args.arch}_{args.seeds[i]}",
+                map_location=torch.device("cpu"),
+            )
         )
         pan2, pan2_test_loss, pan2_acc = train_model(
             pan=PAN(input_size=pan_input_size).to(device),
