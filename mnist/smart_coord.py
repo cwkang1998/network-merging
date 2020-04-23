@@ -1,6 +1,6 @@
 import torch
 import torch.nn.functional as F
-
+from archs.pan import compute_agnostic_stats
 
 def craft_first_5_target(target):
     pan_target = [0] * len(target)
@@ -128,7 +128,7 @@ def predict_with_feature_pan(args, model1, model2, pan1, pan2, data):
 
 def predict_with_agnostic_pan(args, model1, model2, pan1, pan2, data):
     """
-    Make a prediction with PAN using features of the models.
+    Make a prediction with PAN using agnostic features of the models.
     Here we take a winner takes all approach, as we have 2 classifier classifying 1 input with
     1 intended label(output). However, theoredically we can also go for a multi-label(multi-output)
     appproach, with multiple network working together to classify one input into multiple class.
@@ -136,8 +136,16 @@ def predict_with_agnostic_pan(args, model1, model2, pan1, pan2, data):
 
     output1, feature1 = model1(data, out_feature=True)
     output2, feature2 = model2(data, out_feature=True)
-    p1_out = pan1(feature1)
-    p2_out = pan2(feature2)
+
+    if args.pan_type == "agnostic_feature":
+        stats1 = compute_agnostic_stats(feature1)
+        stats2 = compute_agnostic_stats(feature2)
+    elif args.pan_type == "agnostic_logits":
+        stats1 = compute_agnostic_stats(output1)
+        stats2 = compute_agnostic_stats(output2)
+
+    p1_out = pan1(stats1)
+    p2_out = pan2(stats2)
 
     # debugging
     p1_count = 0
@@ -190,6 +198,8 @@ def smart_coord_test(args, model1, model2, pan1, pan2, device, test_loader):
             output = predict_with_feature_pan(args, model1, model2, pan1, pan2, data)
         elif args.pan_type == "logits":
             output = predict_with_logits_pan(args, model1, model2, pan1, pan2, data)
+        elif args.pan_type == "agnostic_feature" or args.pan_type == "agnostic_logits":
+            output = predict_with_agnostic_pan(args, model1, model2, pan1, pan2, data)
         else:
             raise NotImplementedError("Not an eligible pan type.")
 

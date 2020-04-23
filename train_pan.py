@@ -16,7 +16,7 @@ from mnist_cifar10.dataloaders import (
 )
 from archs.lenet5 import LeNet5, LeNet5Halfed
 from archs.resnet import ResNet18
-from archs.pan import PAN
+from archs.pan import PAN, AgnosticPAN, compute_agnostic_stats
 
 
 def train(args, pan, model, device, train_loader, target_create_fn, optimizer, epoch):
@@ -26,11 +26,14 @@ def train(args, pan, model, device, train_loader, target_create_fn, optimizer, e
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
         logits, feature = model(data, out_feature=True)
-
         if args.pan_type == "feature":
             output = pan(feature)
         elif args.pan_type == "logits":
             output = pan(logits)
+        elif args.pan_type == "agnostic_feature":
+            output = pan(compute_agnostic_stats(feature))
+        elif args.pan_type == "agnostic_logits":
+            output = pan(compute_agnostic_stats(logits))
         else:
             raise NotImplementedError("Not an eligible pan type.")
 
@@ -64,6 +67,10 @@ def test(args, pan, model, device, test_loader, target_create_fn):
                 output = pan(feature)
             elif args.pan_type == "logits":
                 output = pan(logits)
+            elif args.pan_type == "agnostic_feature":
+                output = pan(compute_agnostic_stats(feature))
+            elif args.pan_type == "agnostic_logits":
+                output = pan(compute_agnostic_stats(logits))
             else:
                 raise NotImplementedError("Not an eligible pan type.")
 
@@ -164,8 +171,16 @@ def train_pan(args):
     # Initialize PAN based on its type
     if args.pan_type == "feature":
         pan_input_size = feature_size
+        pan_arch = PAN
     elif args.pan_type == "logits":
         pan_input_size = args.output_size
+        pan_arch = PAN
+    elif args.pan_type == "agnostic_feature":
+        pan_input_size = 6
+        pan_arch = AgnosticPAN
+    elif args.pan_type == "agnostic_logits":
+        pan_input_size = 6
+        pan_arch = AgnosticPAN
 
     # Create the directory for saving if it does not exist
     create_op_dir(args.output_dir)
@@ -193,7 +208,7 @@ def train_pan(args):
             )
         )
         pan1, pan1_test_loss, pan1_acc = train_model(
-            pan=PAN(input_size=pan_input_size).to(device),
+            pan=pan_arch(input_size=pan_input_size).to(device),
             model=model1,
             device=device,
             train_loader=train_loaders[0],
@@ -212,7 +227,7 @@ def train_pan(args):
             )
         )
         pan2, pan2_test_loss, pan2_acc = train_model(
-            pan=PAN(input_size=pan_input_size).to(device),
+            pan=pan_arch(input_size=pan_input_size).to(device),
             model=model2,
             device=device,
             train_loader=train_loaders[1],
@@ -280,7 +295,10 @@ if __name__ == "__main__":
         choices=["lenet5", "lenet5_halfed", "resnet18"],
     )
     parser.add_argument(
-        "--pan_type", type=str, default="feature", choices=["feature", "logits"]
+        "--pan_type",
+        type=str,
+        default="feature",
+        choices=["feature", "logits", "agnostic_feature", "agnostic_logits"],
     )
     parser.add_argument("--batch_size", type=int, default=512)
     parser.add_argument("--test_batch_size", type=int, default=1000)

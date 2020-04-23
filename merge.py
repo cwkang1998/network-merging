@@ -11,7 +11,7 @@ from mnist_cifar10.dataloaders import (
 )
 from archs.lenet5 import LeNet5, LeNet5Halfed
 from archs.resnet import ResNet18
-from archs.pan import PAN
+from archs.pan import PAN, AgnosticPAN
 from config import SEEDS
 
 
@@ -61,8 +61,16 @@ def main(args):
     # Pan settings
     if args.pan_type == "feature":
         pan_input_size = args.feature_size
+        pan_arch = PAN
     elif args.pan_type == "logits":
         pan_input_size = args.output_size
+        pan_arch = PAN
+    elif args.pan_type == "agnostic_feature":
+        pan_input_size = 6
+        pan_arch = AgnosticPAN
+    elif args.pan_type == "agnostic_logits":
+        pan_input_size = 6
+        pan_arch = AgnosticPAN
 
     # Running the test
     print(f"Dataset: {args.dataset}")
@@ -97,8 +105,7 @@ def main(args):
 
         # Running the experiment
         if args.experiment == "smart_coord":
-            # PAN with logits
-            pan1 = PAN(input_size=pan_input_size).to(args.device)
+            pan1 = pan_arch(input_size=pan_input_size).to(args.device)
             pan1.load_state_dict(
                 torch.load(
                     args.pan_dir
@@ -106,7 +113,7 @@ def main(args):
                     map_location=torch.device("cpu"),
                 )
             )
-            pan2 = PAN(input_size=pan_input_size).to(args.device)
+            pan2 = pan_arch(input_size=pan_input_size).to(args.device)
             pan2.load_state_dict(
                 torch.load(
                     args.pan_dir
@@ -158,7 +165,10 @@ if __name__ == "__main__":
         ],
     )
     parser.add_argument(
-        "--pan_type", type=str, default="feature", choices=["feature", "logits"]
+        "--pan_type",
+        type=str,
+        default="feature",
+        choices=["feature", "logits", "agnostic_feature", "agnostic_logits"],
     )
     parser.add_argument("--test_batch_size", type=int, default=1000)
     parser.add_argument("--epochs", type=int, default=10)
