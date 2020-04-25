@@ -176,10 +176,10 @@ def train_pan(args):
         pan_input_size = args.output_size
         pan_arch = PAN
     elif args.pan_type == "agnostic_feature":
-        pan_input_size = 6
+        pan_input_size = 3
         pan_arch = AgnosticPAN
     elif args.pan_type == "agnostic_logits":
-        pan_input_size = 6
+        pan_input_size = 3
         pan_arch = AgnosticPAN
 
     # Create the directory for saving if it does not exist
@@ -298,7 +298,7 @@ if __name__ == "__main__":
         "--pan_type",
         type=str,
         default="feature",
-        choices=["feature", "logits", "agnostic_feature", "agnostic_logits"],
+        choices=["feature", "logits", "agnostic_logits"],
     )
     parser.add_argument("--batch_size", type=int, default=512)
     parser.add_argument("--test_batch_size", type=int, default=1000)
