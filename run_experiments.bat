@@ -21,3 +21,7 @@ REM Feature based pan
 python merge.py --dataset=disjoint_mnist --arch=lenet5 --experiment=smart_coord --pan_type=feature &
 python merge.py --dataset=mnist_cifar10 --arch=lenet5 --experiment=smart_coord --pan_type=feature & 
 REM python merge.py --dataset=mnist_cifar10 --arch=resnet18 --experiment=smart_coord --pan_type=feature
+
+REM agnostic logits based pan
+python merge.py --dataset=disjoint_mnist --arch=lenet5 --experiment=smart_coord --pan_type=agnostic_logits &
+python merge.py --dataset=mnist_cifar10 --arch=lenet5 --experiment=smart_coord --pan_type=agnostic_logits
