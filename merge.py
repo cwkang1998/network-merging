@@ -66,10 +66,10 @@ def main(args):
         pan_input_size = args.output_size
         pan_arch = PAN
     elif args.pan_type == "agnostic_feature":
-        pan_input_size = 6
+        pan_input_size = 3
         pan_arch = AgnosticPAN
     elif args.pan_type == "agnostic_logits":
-        pan_input_size = 6
+        pan_input_size = 3
         pan_arch = AgnosticPAN
 
     # Running the test
@@ -131,12 +131,19 @@ def main(args):
         results.extend(result)
 
     # Save the results
-    if args.save_results:
+    if args.save_results and args.experiment == "smart_coord":
+        save_results(
+            f"{args.dataset}_{args.arch}_{args.pan_type}",
+            results,
+            f"{args.results_dir}{args.experiment}/",
+        )
+    elif args.save_results:
         save_results(
             f"{args.dataset}_{args.arch}",
             results,
             f"{args.results_dir}{args.experiment}/",
         )
+    
 
 
 if __name__ == "__main__":

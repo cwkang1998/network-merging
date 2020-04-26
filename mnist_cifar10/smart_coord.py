@@ -47,7 +47,7 @@ def predict_with_logits_pan(args, model1, model2, pan1, pan2, m1_data, m2_data):
     # Take m1_data len since m1 and m2 are the same data with diff channel sizes
     combined_output = [0] * len(m1_data)
     for i in range(len(combined_output)):
-        if p1_out[i] == 1 and p2_out[i] == 0:
+        if p1_out[i].max(0)[1] == 1 and p2_out[i].max(0)[1] == 0:
             # p1 true and p2 false
             combined_output[i] = torch.cat(
                 [
@@ -58,7 +58,7 @@ def predict_with_logits_pan(args, model1, model2, pan1, pan2, m1_data, m2_data):
                 ]
             )
             p1_count += 1
-        elif p1_out[i] == 0 and p2_out[i] == 1:
+        elif p1_out[i].max(0)[1] == 0 and p2_out[i].max(0)[1] == 1:
             # p1 false and p2 true
             combined_output[i] = torch.cat(
                 [
@@ -99,7 +99,7 @@ def predict_with_feature_pan(args, model1, model2, pan1, pan2, m1_data, m2_data)
     # Take m1_data len since m1 and m2 are the same data with diff channel sizes
     combined_output = [0] * len(m1_data)
     for i in range(len(combined_output)):
-        if p1_out[i] == 1 and p2_out[i] == 0:
+        if p1_out[i].max(0)[1] == 1 and p2_out[i].max(0)[1] == 0:
             # p1 true and p2 false
             combined_output[i] = torch.cat(
                 [
@@ -110,7 +110,7 @@ def predict_with_feature_pan(args, model1, model2, pan1, pan2, m1_data, m2_data)
                 ]
             )
             p1_count += 1
-        elif p1_out[i] == 0 and p2_out[i] == 1:
+        elif p1_out[i].max(0)[1] == 0 and p2_out[i].max(0)[1] == 1:
             # p1 false and p2 true
             combined_output[i] = torch.cat(
                 [
@@ -159,7 +159,7 @@ def predict_with_agnostic_pan(args, model1, model2, pan1, pan2, m1_data, m2_data
     # Take m1_data len since m1 and m2 are the same data with diff channel sizes
     combined_output = [0] * len(m1_data)
     for i in range(len(combined_output)):
-        if p1_out[i] == 1 and p2_out[i] == 0:
+        if p1_out[i].max(0)[1] == 1 and p2_out[i].max(0)[1] == 0:
             # p1 true and p2 false
             combined_output[i] = torch.cat(
                 [
@@ -170,7 +170,7 @@ def predict_with_agnostic_pan(args, model1, model2, pan1, pan2, m1_data, m2_data
                 ]
             )
             p1_count += 1
-        elif p1_out[i] == 0 and p2_out[i] == 1:
+        elif p1_out[i].max(0)[1] == 0 and p2_out[i].max(0)[1] == 1:
             # p1 false and p2 true
             combined_output[i] = torch.cat(
                 [
