@@ -17,6 +17,16 @@ The software is running with the current libraries, do remember to install them 
 - imgaug 0.2.6
 - Pillow 7.0.0
 
+Do note that you can install the dependencies via doing:
+
+```
+pip install -r requirements
+```
+
+However, do note that pytorch is not included in requirements.txt and have to be downloaded seperately from the official website @ [pytorch](https://pytorch.org/).
+
+This is because the newest version of pytorch is only available at their site, and thus using pip to install would cause errors.
+
 ## Training base networks
 
 Training for the base networks can be invoked using the command:
